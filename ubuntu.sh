@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#
+# this is my costume settings fog ubuntu 20.04 lts #######################################
+#
+
+
 BLACK='\033[0;30m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -17,8 +22,6 @@ NC='\033[0m'
 #theme color
 TC=red
 
-I=3
-
 HOME=/home/$(ls /home)
 printf "${CYAN}USER\t${USER}\n${NC}" 
 printf "${CYAN}HOME\t${HOME}\n${NC}" 
@@ -29,6 +32,7 @@ then
     && exit 1
 fi
 printf "${PURPLE}press Ctrl-C to cancel scpript\n" 
+I=3
 while (( I > 0))
 do
 printf "\b%d" $I  && ((I--)) && sleep 1
@@ -36,20 +40,25 @@ done
 
 clear
 
-
-# read "inster user"
+STEP=0
 
 #first of all ######################################################################
-printf "${YELLOW}update and upgrade \n${NC}" 
-apt-get update &>/dev/null \
-&& apt-get upgrade -y &>/dev/null \
-&& printf "${GREEN}Success\n${NC}" \
-|| printf "${RED}Failed\n${NC}"
+if [[ $STEP -eq 0 ]]
+then
+    printf "${YELLOW}update and upgrade \n${NC}" 
+    apt-get update &>/dev/null \
+    && apt-get upgrade -y &>/dev/null \
+    && printf "${GREEN}Success\n${NC}" && sed -i '43 s/STEP=0/STEP=1/1' ./ubuntu.sh \
+    || printf "${RED}Failed\n${NC}"
+fi
 
-printf "${YELLOW}Installing git curl wget gcc g++ clang make zsh gettext\n${NC}" 
-sudo apt install git curl wget gcc g++ clang make zsh gettext -y &>/dev/null\
-&& printf "${GREEN}Success\n${NC}" \
-|| printf "${RED}Failed\n${NC}"
+if [[ $STEP -lt 2 ]]
+then
+    printf "${YELLOW}Installing git curl wget gcc g++ clang make zsh gettext\n${NC}" 
+    sudo apt install git curl wget gcc g++ clang make zsh gettext -y &>/dev/null\
+    && printf "${GREEN}Success\n${NC}" && sed -i '43 s/STEP=1/STEP=2/1' ./ubuntu.sh\
+    || printf "${RED}Failed\n${NC}"
+fi
 
 # installing ohmyzsh ################################################################
 printf "${YELLOW}Installing ohmyzsh\n${NC}" 
@@ -65,8 +74,9 @@ fi
 rm -rf install.sh &>/dev/null\
 
 
+EXTFOLDER=${HOME}/.local/share/gnome-shell/extensions
 
-# themes and extantions ########################################################
+# themes and extantions ##################################################################
 printf "${YELLOW}Installing gnome-tweak-tool\n${NC}"
 mkdir  -p "${HOME}/.themes" "${HOME}/.icons" "${HOME}/.themes" "${HOME}/tmp"
 apt install gnome-tweak-tool &>/dev/null \
@@ -107,28 +117,61 @@ fi
 
 #dash to panel
 cd ${HOME}/tmp
-printf "${YELLOW}Installing dash-to-panel extantion\n${NC}"
-git clone https://github.com/home-sweet-gnome/dash-to-panel.git &>/dev/null \
-&& cd ./dash-to-panel/ \
-&& make install \
-&& gnome-extensions enable "dash-to-panel@jderose9.github.com" &>/dev/null \
-&& printf "${GREEN}Success\n${NC}" \
-|| printf "${RED}Failed\n${NC}"
+printf "${YELLOW}Installing dash-to-panel extention\n${NC}"
+if test -e ${EXTFOLDER}/dash-to-panel@jderose9.github.com
+then
+    printf "${GREEN}dash-to-panel extantion already installed\n${NC}"
+else 
+    git clone https://github.com/home-sweet-gnome/dash-to-panel.git &>/dev/null \
+    && cd ./dash-to-panel/ \
+    && make install \
+    && gnome-extensions enable "dash-to-panel@jderose9.github.com" &>/dev/null \
+    && printf "${GREEN}Success\n${NC}" \
+    || printf "${RED}Failed\n${NC}"
+fi
+
+#night-light-toggle
+printf "${YELLOW}Installing toggle-night-light extantion\n${NC}"
+if test -e ${EXTFOLDER}/toggle-night-light@cansozbir.github.io
+then
+    printf "${GREEN}night-light-toggle extention already installed\n${NC}"
+else 
+    git clone https://github.com/cansozbir/gnome-shell-toggle-night-light-extension && \
+    cd gnome-shell-toggle-night-light-extension/ && \
+    cp -r toggle-night-light@cansozbir.github.io/ ~/.local/share/gnome-shell/extensions/ \
+    && gnome-extensions enable "toggle-night-light@cansozbir.github.io" &>/dev/null \
+    && printf "${GREEN}Success\n${NC}" \
+    || printf "${RED}Failed\n${NC}"
+fi
+
+#night-light-toggle
+printf "${YELLOW}Installing toggle-night-light extantion\n${NC}"
+if test -e ${EXTFOLDER}/toggle-night-light@cansozbir.github.io
+then
+    printf "${GREEN}night-light-toggle extention already installed\n${NC}"
+else 
+    git clone https://github.com/cansozbir/gnome-shell-toggle-night-light-extension && \
+    cd gnome-shell-toggle-night-light-extension/ && \
+    cp -r toggle-night-light@cansozbir.github.io/ ~/.local/share/gnome-shell/extensions/ \
+    && gnome-extensions enable "toggle-night-light@cansozbir.github.io" &>/dev/null \
+    && printf "${GREEN}Success\n${NC}" \
+    || printf "${RED}Failed\n${NC}"
+fi
+
 
 # installing programes ###################################################################
-printf "${YELLOW}Installing vscode\n${NC}"
-code -v &>/dev/null \
-&& printf "${RED}vscode already instlled\n${NC}" \
-|| snap install code --classic \
+# printf "${YELLOW}Installing vscode\n${NC}"
+# code -v &>/dev/null \
+# && printf "${RED}vscode already instlled\n${NC}" \
+# || snap install code --classic \
 
-printf "${YELLOW}Installing slack\n${NC}"
-snap install slack --classic
+# printf "${YELLOW}Installing slack\n${NC}"
+# snap install slack --classic
 
 
 
-# restart gnome #####################################################################
+#restart gnome #####################################################################
 # printf "${YELLOW}Restarting gnome \n${NC}"
 # sudo -u isel bash << EOF
 # busctl --user call "org.gnome.Shell" "/org/gnome/Shell" "org.gnome.Shell" "Eval" "s" 'Meta.restart("Restarting…")';
-# whoami
 # EOF
