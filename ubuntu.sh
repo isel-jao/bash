@@ -26,7 +26,7 @@ HOME=/home/$(ls /home)
 printf "${CYAN}USER\t${USER}\n${NC}" 
 printf "${CYAN}HOME\t${HOME}\n${NC}" 
 
-if [[ $(whoami)!= "root" ]]
+if [[ $(whoami) != "root" ]]
 then
 	printf "${PURPLE}please run script in user mode \n${NC}" \
 	&& exit 1
