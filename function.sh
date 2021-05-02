@@ -264,24 +264,33 @@ function replace_all()
 	echo -n ${string//$pattern/$replacement}
 }
 
-
+# set exit status to 1 if the given bash variable not an unsigned integer
 function is_unsigned()
 {
 	re='^[0-9]+$'
-	if  [[ $1 =~ $re ]] ; then
-		echo "is a number" >&2
-	else
-		echo "error: Not a number" >&2
+	if ! [[ $1 =~ $re ]] ; then
+		(exit 1)
 	fi
 }
 
-arr=($@)
-str=${arr[@]:1}
+function is_number()
+{
+	arg=$1
+
+	
+	if [ ${arg:0:1} = '-' -o ${arg:0:1} = '+' ] ; then
+		arg=${arg:1}
+	fi
+	is_unsigned $arg
+}
+
 
 test $# -gt 0 && \
-$1 $str || \
-read -r -p "inter command" cmd && \
+$@ || \
+echo "inter a command"
+read -r cmd && \
 $cmd
+
 
 
 #    __   _  _  __  ___  __ _    ____  ____  ____  ____  ____  ____  __ _   ___  ____  ____ 
