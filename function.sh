@@ -285,11 +285,11 @@ function is_number()
 }
 
 
-test $# -gt 0 && \
-$@ || \
-echo "inter a command"
-read -r cmd && \
-$cmd
+# test $# -gt 0 && \
+# $@ || \
+# echo "inter a command"
+# read -r cmd && \
+# $cmd
 
 
 

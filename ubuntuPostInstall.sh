@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# include all functions in function.sh script
-source functions.sh
+# include all code in function.sh script
+source function.sh
 
 # ask for root access
-[ "$(whoami)" != "root" ] && exec sudo -- "$0" "$@"
+[ "$(whoami)" != "root" ] && exec sudo bash -- "$0" "$@"
 
 
 programs=
@@ -25,23 +25,25 @@ programs+=" google-chrome-stable"
 programs+=" teamviewer"
 # snap
 programs+=" discord"
+programs+=" spotify"
+programs+=" vlc"
 
 
 # update repos
 function update()
 {
-	echo -n -e "${Blue} update ..."
+	echo -n -e "${Blue}update ..."
 	apt-get update &>/dev/null
-	test $? &&  echo  -e "\r${Green} update ✅ ${White} " || echo  -e "\r${Red} update ❌ "  
+	test $? &&  echo  -e "\r${Green}update ✅ ${White} " || echo  -e "\r${Red}update ❌ "  
 }
 
 
 # install updates
 function upgrade()
 {
-	echo -n -e "${Blue} upgrade ..."
+	echo -n -e "${Blue}upgrade ..."
 	apt-get upgrade -y  &>/dev/null
-	test $? &&  echo  -e "\r${Green} upgrade ✅ ${White} " || echo  -e "\r${Red} upgrade ❌ " 
+	test $? &&  echo  -e "\r${Green}upgrade ✅ ${White} " || echo  -e "\r${Red}upgrade ❌ " 
 }
 
 
@@ -86,6 +88,6 @@ update && upgrade || exit
 
 install  ${programs} # defined above
 
-install_themes
+test $1 -eq "-t" && install_themes
 
 
