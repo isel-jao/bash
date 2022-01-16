@@ -60,8 +60,8 @@ function install()
 
 		echo -n -e "${Blue}${program} ..."
 
-		which $program &>/dev/null || apt install $program &>/dev/null \
-		|| snap install $program --classic &>/dev/null
+		which $program &>/dev/null || apt install $program -y &>/dev/null \
+		|| snap install $program --classic  &>/dev/null
 
 		test $? &&  echo  -e "\r${Green}$program ✅ ${White}" || echo  -e "\r${Red}$program ❌ ${White}"
 
@@ -88,6 +88,6 @@ update && upgrade || exit
 
 install  ${programs} # defined above
 
-test $1 -eq "-t" && install_themes
+[[ $1 == "-t" ]] && install_themes
 
 
