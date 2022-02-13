@@ -22,11 +22,13 @@ programs+=" blueman"
 programs+=" fonts-powerline"
 programs+=" telegram-desktop"
 programs+=" google-chrome-stable"
+programs+=" npm"
 programs+=" teamviewer"
 # snap
 programs+=" discord"
 programs+=" spotify"
 programs+=" vlc"
+programs+=" code"
 
 
 # update repos
@@ -34,7 +36,7 @@ function update()
 {
 	echo -n -e "${Blue}update ..."
 	apt-get update &>/dev/null
-	test $? &&  echo  -e "\r${Green}update ✅ ${White} " || echo  -e "\r${Red}update ❌ "  
+	test $? -eq 0 &&  echo  -e "\r${Green}update ✅ ${White} " || echo  -e "\r${Red}update ❌ "  
 }
 
 
@@ -43,7 +45,7 @@ function upgrade()
 {
 	echo -n -e "${Blue}upgrade ..."
 	apt-get upgrade -y  &>/dev/null
-	test $? &&  echo  -e "\r${Green}upgrade ✅ ${White} " || echo  -e "\r${Red}upgrade ❌ " 
+	test $? -eq 0 &&  echo  -e "\r${Green}upgrade ✅ ${White} " || echo  -e "\r${Red}upgrade ❌ " 
 }
 
 
@@ -63,7 +65,7 @@ function install()
 		which $program &>/dev/null || apt install $program -y &>/dev/null \
 		|| snap install $program --classic  &>/dev/null
 
-		test $? &&  echo  -e "\r${Green}$program ✅ ${White}" || echo  -e "\r${Red}$program ❌ ${White}"
+		test $? -eq 0 &&  echo  -e "\r${Green}$program ✅ ${White}" || echo  -e "\r${Red}$program ❌ ${White}"
 
 		((index++))
 	done
